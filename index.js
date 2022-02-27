@@ -14,7 +14,6 @@ app.get('/', (req, res) => {
 
 
 io.on('connection', (socket) => {
-  io.emit('chat message', "He entrado en la sala");
   socket.on('chat message', msg => {
     io.emit('chat message', msg);
   });
@@ -36,7 +35,6 @@ io.on("disconnect", (reason) => {
     socket.connect();
     
   }
-  
   
   // else the socket will automatically try to reconnect
 });

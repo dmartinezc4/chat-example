@@ -23,7 +23,10 @@
   <body>
     <ul id="messages"></ul>
     <form id="form" action="">
-      <input id="input" autocomplete="off" /><button>Send</button>
+      <input id="input" autocomplete="off" />
+      <input id="nick" autocomplete="off"/>
+      <!-- Esta sera un input para el nickname -->
+      <button>Send</button>
       <button onclick="disconnect()">Disconnect</button> 
       <!-- Botón que al hacer click desconecta -->
       <button onclick="reconnect()">Reconnect</button>
@@ -36,14 +39,21 @@
       var messages = document.getElementById('messages');
       var form = document.getElementById('form');
       var input = document.getElementById('input');
+      var nick = document.getElementById('nick');
+      //Caja de input que no se va a borrar para el nickname
       var salir=document.getElementById("desconexion");
 
       form.addEventListener('submit', function(e) {
         e.preventDefault();
-        if (input.value) {
-          socket.emit('chat message', input.value);
+        if(nick.value && input.value){
+          //Si tiene un nick que mande el mensaje con el nick
+          socket.emit('chat message', nick.value + " : "  + input.value);
           input.value = '';
         }
+        if (input.value) {//Como no tiene nick el mensaje se manda anonimamente
+          socket.emit('chat message', input.value);
+          input.value = '';
+        }        
       });
 
       socket.on('chat message', function(msg) {
@@ -52,15 +62,28 @@
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
       });
-      function disconnect(){//esto simplemente me desconecto del socket pero antes envío un mensaje de que me voy
-        socket.emit('chat message', "I'll be back");
+      function disconnect(){
+        //esto simplemente me desconecto del socket pero antes envío un mensaje de           que me voy
+        if(nick.value){//Si tiene el nick que diga quien se va y si no pues no
+          socket.emit('chat message', nick.value + " : I'll be back");
         socket.disconnect();
+        }else{
+          socket.emit('chat message', "I'll be back");
+        socket.disconnect();
+        }        
       }
       
-      function reconnect(){//Función inversa, me conecto al socket y luego mando un mensaje de que he vuelto 
-        socket.connect();
-        socket.emit('chat message', "I've come once more");
+      function reconnect(){
+        //Función inversa, me conecto al socket y luego mando un mensaje de que he             vuelto 
+        if(nick.value){//Si tiene el nick que diga quien vuelve y si no pues no
+          socket.connect();
+        socket.emit('chat message', nick.value + " : I've come once more");
+        }else{
+          socket.connect();
+          socket.emit('chat message', "I've come once more");
+        }        
       }
+      //Unico problema con la : puedes reconectarte en todo momento entonces podría         sacar todo el rato el mensaje de "I've come once more"
     </script>
   </body>
 </html>
