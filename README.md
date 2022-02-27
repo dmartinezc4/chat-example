@@ -13,3 +13,7 @@ You can also spin up a free Heroku dyno to test it out:
 Or run it on [Repl.it](https://repl.it/):
 
 [![Run on Repl.it](https://repl.it/badge/github/socketio/chat-example)](https://repl.it/github/socketio/chat-example)
+
+## Problemas conocidos
+
+Es posible reconectar varias veces pudiendo así enviar repetidamente el mensaje "I've come once more", cuando realmente ya esta conectado el cliente
