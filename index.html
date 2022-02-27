@@ -9,25 +9,34 @@
       #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
       #input:focus { outline: none; }
       #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+      
 
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages > li { padding: 0.5rem 1rem; }
       #messages > li:nth-child(odd) { background: #efefef; }
     </style>
+    <!-- He intentado poner distintos tipos de botones y no se me da bien html
+      pero send simplemente hace la función de que haría el intro al enviar los msj
+      y disconnect y reconnect hacen sus funciones asociadas-->
   </head>
+  
   <body>
     <ul id="messages"></ul>
     <form id="form" action="">
       <input id="input" autocomplete="off" /><button>Send</button>
+      <button onclick="disconnect()">Disconnect</button> 
+      <!-- Botón que al hacer click desconecta -->
+      <button onclick="reconnect()">Reconnect</button>
+      <!-- Botón que al hacer click reconecta -->
     </form>
     <script src="/socket.io/socket.io.js"></script>
 
     <script>
       var socket = io();
-
       var messages = document.getElementById('messages');
       var form = document.getElementById('form');
       var input = document.getElementById('input');
+      var salir=document.getElementById("desconexion");
 
       form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -43,6 +52,15 @@
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
       });
+      function disconnect(){//esto simplemente me desconecto del socket pero antes envío un mensaje de que me voy
+        socket.emit('chat message', "I'll be back");
+        socket.disconnect();
+      }
+      
+      function reconnect(){//Función inversa, me conecto al socket y luego mando un mensaje de que he vuelto 
+        socket.connect();
+        socket.emit('chat message', "I've come once more");
+      }
     </script>
   </body>
 </html>
