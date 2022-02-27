@@ -14,6 +14,7 @@ app.get('/', (req, res) => {
 
 
 io.on('connection', (socket) => {
+  io.emit('chat message', "He entrado en la sala");
   socket.on('chat message', msg => {
     io.emit('chat message', msg);
   });
@@ -33,6 +34,7 @@ io.on("disconnect", (reason) => {
   if (reason === "io server disconnect") {
     // the disconnection was initiated by the server, you need to reconnect manually
     socket.connect();
+    
   }
   
   
@@ -40,6 +42,7 @@ io.on("disconnect", (reason) => {
 });
 
 io.on('connection', (socket) => {
+  
   console.log('user ' + socket.id + ' connected');
   socket.on('disconnect', () => {
     console.log('user '+ socket.id + ' disconnected');
